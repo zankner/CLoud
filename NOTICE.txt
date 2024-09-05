@@ -1,0 +1,81 @@
+Copyright (2024) 
+
+Use of this software is subject to the included LICENSE file.
+
+This Software contains code from the following open source projects, licensed under the Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0) license:
+
+huggingface/transformers - https://github.com/huggingface/transformers
+Copyright 2018- The Hugging Face team. All rights reserved.
+
+huggingface/datasets - https://github.com/huggingface/datasets
+Copyright Hugging Face Datasets authors
+
+Lightning-AI/torchmetrics - https://github.com/Lightning-AI/torchmetrics
+Copyright LIghtning AI Torchmetrics authors
+
+mosaicml/composer - https://github.com/mosaicml/composer
+Copyright MosaicML Composer authors
+
+vllm-project/vllm - https://github.com/vllm-project/vllm
+Copyright VLLM Project VLLM authors
+
+mosaicml/llm-foundry - https://github.com/mosaicml/llm-foundry
+Copyright MosaicML LLM Foundry authors
+
+llama-3.1 - https://llama.meta.com/llama3_1/license/
+Copyright © Meta Platforms, Inc. All Rights Reserved.
+
+__________
+This Software contains code from the following open source projects, licensed under the BSD 3-Clause license (https://opensource.org/license/bsd-3-clause):
+
+pytorch/pytorch - https://github.com/pytorch/pytorch
+From PyTorch:
+Copyright (c) 2016-     Facebook, Inc            (Adam Paszke)
+Copyright (c) 2014-     Facebook, Inc            (Soumith Chintala)
+Copyright (c) 2011-2014 Idiap Research Institute (Ronan Collobert)
+Copyright (c) 2012-2014 Deepmind Technologies    (Koray Kavukcuoglu)
+Copyright (c) 2011-2012 NEC Laboratories America (Koray Kavukcuoglu)
+Copyright (c) 2011-2013 NYU                      (Clement Farabet)
+Copyright (c) 2006-2010 NEC Laboratories America (Ronan Collobert, Leon Bottou, Iain Melvin, Jason Weston)
+Copyright (c) 2006      Idiap Research Institute (Samy Bengio)
+Copyright (c) 2001-2004 Idiap Research Institute (Ronan Collobert, Samy Bengio, Johnny Mariethoz)
+
+From Caffe2:
+Copyright (c) 2016-present, Facebook Inc. All rights reserved.
+
+All contributions by Facebook:
+Copyright (c) 2016 Facebook Inc.
+
+All contributions by Google:
+Copyright (c) 2015 Google Inc.
+All rights reserved.
+
+All contributions by Yangqing Jia:
+Copyright (c) 2015 Yangqing Jia
+All rights reserved.
+
+All contributions by Kakao Brain:
+Copyright 2019-2020 Kakao Brain
+
+All contributions by Cruise LLC:
+Copyright (c) 2022 Cruise LLC.
+All rights reserved.
+
+All contributions from Caffe:
+Copyright(c) 2013, 2014, 2015, the respective contributors
+All rights reserved.
+
+All other contributions:
+Copyright(c) 2015, 2016 the respective contributors
+All rights reserved.
+
+Caffe2 uses a copyright model similar to Caffe: each contributor holds
+copyright over their contributions to Caffe2. The project versioning records
+all such contribution and copyright details. If a contributor wants to further
+mark their specific copyright on a particular contribution, they should
+indicate their copyright solely in the commit message of the change when it is
+committed.
+
+
+__________
+Llama 3.1 is licensed under the Llama 3.1 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved.
