@@ -1,4 +1,5 @@
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import numpy as np
 from datasets import load_dataset
@@ -6,6 +7,7 @@ from transformers import AutoTokenizer
 from tqdm import tqdm
 
 from cloud.model import CLoudRewardModel
+from cloud.inference.api import CLoudAPI
 
 REWARD_BENCH_TO_CATEGORY_MAPPING = {
     "Chat": [
@@ -100,7 +102,7 @@ def post_process_reward_bench(eval_metadata, rewards):
 # Scoring
 ###########
 
-def generate_rewards(model, tokenizer, eval_data, batch_size):
+def generate_rewards_hf(model, tokenizer, eval_data, batch_size):
     rewards = {}
 
     for i in tqdm(range(0, len(eval_data), batch_size)):
@@ -117,21 +119,51 @@ def generate_rewards(model, tokenizer, eval_data, batch_size):
 
     return rewards
 
+def generate_rewards_vllm(client: CLoudAPI, eval_data, num_workers):
+    rewards = {}
+
+    def fetch_reward(example):
+        critique, reward = client.get_reward(
+            example["prompt"],
+            example["response"],
+        )
+        return critique, reward, example["id"]
+
+    with ThreadPoolExecutor(max_workers=num_workers) as executor:
+        futures = {executor.submit(fetch_reward, example): example["id"] for example in eval_data}
+        for future in tqdm(as_completed(futures), total=len(eval_data), desc="Generating rewards"):
+            critique, reward, id_ = future.result()
+            rewards[id_] = reward
+    
+    return rewards
+
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", type=str, required=True)
     parser.add_argument("--benchmark", type=str, default="reward-bench", choices=["reward-bench", "arena-hard"])
+
+    # Vllm args
+    parser.add_argument("--inference-method", type=str, default="hf", choices=["hf", "vllm"])
+    parser.add_argument("--num-workers", type=int, default=16)
+    parser.add_argument("--tensor-parallel-size", type=int, default=1)
+    parser.add_argument("--hosted", action="store_true")
+
+    # HF args
     parser.add_argument("--batch-size", type=int, default=1)
     args = parser.parse_args()
 
-    model = CLoudRewardModel.from_pretrained(args.model_path, device_map="cuda")
-    tokenizer = AutoTokenizer.from_pretrained(args.model_path, padding_side="left")
 
     if args.benchmark == "reward-bench":
         eval_data, eval_metadata = load_reward_bench()
     
-    rewards = generate_rewards(model, tokenizer, eval_data, batch_size=args.batch_size)
+    if args.inference_method == "hf":
+        model = CLoudRewardModel.from_pretrained(args.model_path, device_map="cuda")
+        tokenizer = AutoTokenizer.from_pretrained(args.model_path, padding_side="left")
+        rewards = generate_rewards_hf(model, tokenizer, eval_data, batch_size=args.batch_size)
+    elif args.inference_method == "vllm":
+        client = CLoudAPI(model=args.model_path, tensor_parallel_size=args.tensor_parallel_size, hosted=args.hosted)
+        rewards = generate_rewards_vllm(client, eval_data, num_workers=args.num_workers)
 
     post_process_reward_bench(eval_metadata, rewards)

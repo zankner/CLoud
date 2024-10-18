@@ -182,6 +182,7 @@ if __name__ == "__main__":
     from transformers import AutoTokenizer
 
     model_name = "ankner/Llama3-8B-CLoud-RM"
+    # model_name = "ankner/Llama3-8B-Classic-RM"
     model = CLoudRewardModel.from_pretrained(model_name, device_map="cuda", torch_dtype=torch.float16)
     tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
 

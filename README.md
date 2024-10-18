@@ -24,7 +24,7 @@ CLoud reward models lead to large gains for pairwise preference modeling on Rewa
 - [x] Release models and inference examples
 - [ ] Post example training run logs
 - [ ] Add ArenaHard evaluation code
-- [ ] Add VLLM support for inference
+- [x] Add VLLM support for inference
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -58,9 +58,41 @@ Optional: base docker image used during development `mosaicml/pytorch:2.3.0_cu12
 | Llama3-70B  |  CLoud | [ankner/Llama3-70B-CLoud-RM](https://huggingface.co/ankner/Llama3-70B-CLoud-RM) |
 
 ## Inference
-We provide a gradio demo which can be run as follows: `gradio cloud/demo.py`. By default this will demo `ankner/Llama3-8B-CLoud-RM`, but you can change the model loaded in the script.
+We now support VLLM for CLoud model inference.
+The code for performing inference lives within the `cloud/inference` folder.
+There are two ways to perform VLLM inference.
+The easiest way is to directly call the `CLoudAPI` class and let it spin up the models for you.
+As an example you can run the following:
+```python
+api = CLoudAPI(model="ankner/Llama3-8B-CLoud-RM", hosted=False)
+critique, reward = api.get_reward(
+    user_prompt="Write me a story",
+    assistant_response="No I don't want to do that.",
+    max_tokens=2048,
+    temperature=1e-5
+)
+print("Critique:", critique)
+print("Reward:", reward)
+```
+The second way is to spin up the VLLM server yourself.
+In a separate terminal run the following: `python cloud/inference/serve_cloud.py --model {hf-model-name} {vllm-args}` where `{vllm-args}` accepts all arguments that a vllm openai server accepts.
+After the server is running you can perform inference the same as the above example except you should specifiy that the model is being hosted on the vllm server:
+```python
+api = CLoudAPI(model="ankner/Llama3-8B-CLoud-RM", hosted=False)
+```
+For a more in depth example of performing VLLM inference for CLoud models please refer to `cloud/eval/eval.py`.
 
-If you want to perform inference on your own data, please refer to the following example:
+We provide a gradio demo which can be run as follows: `gradio cloud/demos/general_demo.py`. By default this will demo `ankner/Llama3-8B-CLoud-RM`, but you can change the model loaded in the script.
+We also provide a more in-depth demo for RewardBench.
+This demo assumes that both a classic and CLoud reward model are being hosted.
+This means before running the demo you should spin up both a CLoud and Classic reward model following the instruction above.
+`gradio cloud/demos/reward_bench_demo.py`.
+
+<details>
+<summary>HF native inference</summary>
+
+We also do provide a method to perform inference just using standard transformers.
+While this isn't reccomended as its slow, below is an example:
 ```python
 from cloud.model import CLoudRewardModel
 from transformers import AutoTokenizer
@@ -87,6 +119,8 @@ for reward, critique in zip(rewards, critiques):
     print(reward)
     print("=" * 100)
 ```
+
+</details>
 
 ## Dataset
 

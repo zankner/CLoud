@@ -9,7 +9,9 @@ setup(
         "openai==1.35.3",
         "datasets==2.19.0",
         "huggingface-hub[hf_transfer]==0.22.2",
-        "gradio==4.42.0"
+        "gradio==4.42.0",
+        "vllm==0.5.0.post1",
+        "fastapi==0.111.0"
     ],
     author="Zack Ankner",
     author_email="ankner@mit.edu",
